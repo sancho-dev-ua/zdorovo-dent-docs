@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Як створювати та вставляти власні блоки в Elementor і звичайний редактор — Zdorovo Dental</title>
+<meta name="description" content="Інструкція для адміністратора сайту zdorovo-dent.com.ua. Технічних знань не потрібно.">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --accent: #1BAE70;
+    --accent-deep: #0f5c45;
+    --ink: #1f2a24;
+    --ink-soft: #55635c;
+    --line: #e2ece7;
+    --tint: #f4faf7;
+    --surface: #fff;
+    --page: #f7faf9;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--page);
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---- header ---- */
+  header.top {
+    background: linear-gradient(135deg, #0f2e1f, #17795a);
+    color: #fff;
+    padding: 40px 0 34px;
+  }
+  header.top h1 { margin: 0 0 10px; font-size: clamp(24px, 4.5vw, 38px); line-height: 1.15; letter-spacing: -.02em; }
+  header.top p { margin: 0; opacity: .9; max-width: 60ch; }
+  header.top .print {
+    display: inline-block; margin-top: 18px; padding: 9px 18px;
+    border: 1.5px solid rgba(255,255,255,.5); border-radius: 999px;
+    color: #fff; text-decoration: none; font-weight: 600; font-size: 14px;
+  }
+  header.top .print:hover { background: rgba(255,255,255,.14); border-color: #fff; }
+
+  /* ---- layout ----
+     minmax(0, 1fr), not 1fr: a 1fr track is min-width:auto, so the article would grow to
+     fit the widest table instead of letting it scroll inside .tablewrap — which made the
+     whole page scroll sideways on a phone. min-width:0 on the article is the same guard. */
+  .cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; padding: 28px 0 60px; }
+  @media (min-width: 1000px) {
+    .cols { grid-template-columns: 250px minmax(0, 1fr); gap: 48px; }
+  }
+
+  /* ---- sidebar ---- */
+  nav.toc { display: none; }
+  @media (min-width: 1000px) {
+    nav.toc {
+      display: block; position: sticky; top: 24px; align-self: start;
+      max-height: calc(100vh - 48px); overflow-y: auto;
+      font-size: 14px; line-height: 1.4;
+    }
+    nav.toc strong { display: block; margin-bottom: 10px; color: var(--ink-soft); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+    nav.toc a { display: block; padding: 6px 10px; color: var(--ink-soft); text-decoration: none; border-left: 2px solid var(--line); }
+    nav.toc a:hover { color: var(--accent-deep); background: var(--tint); border-left-color: var(--accent); }
+  }
+
+  /* ---- article ---- */
+  article { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 30px 26px 40px; }
+  @media (min-width: 700px) { article { padding: 40px 46px 56px; } }
+  /* Title + intro line already appear in the page header — hide the duplicates here,
+     but bring them back for print, where there is no coloured header band. */
+  article > h1:first-child,
+  article > h1:first-child + p { display: none; }
+  h2 {
+    font-size: clamp(20px, 3vw, 25px); margin: 44px 0 14px; padding-bottom: 9px;
+    color: #0f2e1f; border-bottom: 2px solid var(--accent); scroll-margin-top: 20px;
+  }
+  h2:first-of-type { margin-top: 0; }
+  h3 { font-size: 18px; margin: 30px 0 8px; color: var(--accent-deep); scroll-margin-top: 20px; }
+  p { margin: 0 0 12px; }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin: 0 0 6px; }
+  a { color: var(--accent-deep); }
+  strong { color: #0f2e1f; }
+  code {
+    font-family: ui-monospace, Consolas, "Courier New", monospace; font-size: .9em;
+    background: #eef6f1; border: 1px solid #d9ebe2; border-radius: 4px;
+    padding: 1px 5px; color: var(--accent-deep); overflow-wrap: anywhere;
+  }
+  pre {
+    background: #0f2e1f; color: #d6f0e4; border-radius: 8px; padding: 14px 16px;
+    overflow-x: auto; margin: 0 0 16px; font-size: 14px; line-height: 1.5;
+  }
+  pre code { background: none; border: 0; padding: 0; color: inherit; font-size: 14px; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+  blockquote {
+    margin: 0 0 16px; padding: 12px 18px; background: var(--tint);
+    border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0;
+  }
+  blockquote p:last-child { margin-bottom: 0; }
+
+  /* Tables scroll inside their own box so the page never scrolls sideways. */
+  .tablewrap { overflow-x: auto; margin: 0 0 16px; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 420px; }
+  th { text-align: left; background: #eef6f1; color: #0f2e1f; font-weight: 700; padding: 9px 12px; border: 1px solid #d9ebe2; }
+  td { padding: 9px 12px; border: 1px solid var(--line); vertical-align: top; }
+  tr:nth-child(even) td { background: #fafcfb; }
+
+  /* Checklist — real tick boxes the reader can click. */
+  ul.checks { list-style: none; padding-left: 0; }
+  ul.checks li { position: relative; padding-left: 30px; margin-bottom: 9px; cursor: pointer; }
+  ul.checks li::before {
+    content: ""; position: absolute; left: 0; top: 3px; width: 18px; height: 18px;
+    border: 2px solid var(--accent); border-radius: 4px; background: #fff;
+  }
+  ul.checks li.done { color: var(--ink-soft); }
+  ul.checks li.done::before { background: var(--accent); }
+  ul.checks li.done::after {
+    content: ""; position: absolute; left: 6px; top: 6px; width: 5px; height: 10px;
+    border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
+  }
+
+  /* ---- back to top ---- */
+  #totop {
+    position: fixed; right: 18px; bottom: 18px; width: 44px; height: 44px;
+    border: 0; border-radius: 50%; background: var(--accent); color: #fff;
+    font-size: 20px; line-height: 1; cursor: pointer; display: none;
+    box-shadow: 0 6px 18px rgba(15,92,69,.3);
+  }
+  #totop.show { display: block; }
+
+  footer.foot { text-align: center; color: var(--ink-soft); font-size: 13px; padding: 0 0 40px; }
+
+  /* ---- print ---- */
+  @media print {
+    body { background: #fff; }
+    header.top { background: none; color: #000; padding: 0 0 12px; }
+    header.top .print { display: none; }
+    nav.toc, #totop { display: none !important; }
+    .cols { display: block; padding: 0; }
+    article { border: 0; padding: 0; border-radius: 0; }
+    article > h1:first-child,
+    article > h1:first-child + p { display: block; }
+    h2, h3 { break-after: avoid; }
+    table, blockquote { break-inside: avoid; }
+    a { color: #000; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <h1>Як створювати та вставляти власні блоки в Elementor і звичайний редактор</h1>
+    <p>Інструкція для адміністратора сайту zdorovo-dent.com.ua. Технічних знань не потрібно.</p>
+    <a class="print" href="javascript:window.print()">Роздрукувати / зберегти в PDF</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="cols">
+    <nav class="toc">
+      <strong>Зміст</strong>
+      <a href="#how">Як це працює</a>
+      <a href="#step1">Крок 1. Створити набір блоків</a>
+      <a href="#step2">Крок 2. Наповнити набір модулями</a>
+      <a href="#step3">Крок 3. Дізнатися ID набору</a>
+      <a href="#elementor">Крок 4а. Вставити в Elementor</a>
+      <a href="#gutenberg">Крок 4б. Вставити у звичайному редакторі WordPress</a>
+      <a href="#form">Форма запису: глобальна чи своя</a>
+      <a href="#notes">Важливі особливості</a>
+      <a href="#examples">Приклади використання</a>
+      <a href="#troubleshooting">Часті помилки</a>
+    </nav>
+    <article>
+<h1>Як створювати та вставляти власні блоки в Elementor і звичайний редактор</h1>
+<p>Інструкція для адміністратора сайту <strong>zdorovo-dent.com.ua</strong>. Технічних знань не потрібно.</p>
+<p>На сайті є набір готових «блоків» (форма запису, банер із закликом, відгуки, FAQ, лікарі тощо) — ті самі, що на сторінках послуг. Цю інструкцію про те, як зібрати з них <strong>«набір блоків»</strong> і вставити його <strong>у будь-яку сторінку</strong> — і в Elementor, і в звичайному редакторі WordPress.</p>
+<hr>
+<h2>Зміст</h2>
+<ul>
+<li><a href="#how">Як це працює</a></li>
+<li><a href="#step1">Крок 1. Створити набір блоків</a></li>
+<li><a href="#step2">Крок 2. Наповнити набір модулями</a></li>
+<li><a href="#step3">Крок 3. Дізнатися ID набору</a></li>
+<li><a href="#elementor">Крок 4а. Вставити в Elementor</a></li>
+<li><a href="#gutenberg">Крок 4б. Вставити у звичайному редакторі</a></li>
+<li><a href="#form">Форма запису: глобальна чи своя</a></li>
+<li><a href="#notes">Важливі особливості</a></li>
+<li><a href="#examples">Приклади використання</a></li>
+<li><a href="#troubleshooting">Часті помилки</a></li>
+</ul>
+<hr>
+<span id="how"></span>
+<h2>Як це працює</h2>
+<p>Три прості кроки:</p>
+<ol>
+<li>Ви створюєте <strong>«Набір блоків»</strong> — це прихована сторінка-контейнер, у яку складаєте потрібні модулі (наприклад, «Фінальний CTA + форма»).</li>
+<li>Набір отримує свій <strong>номер (ID)</strong>.</li>
+<li>У будь-якій сторінці ви вставляєте короткий код <strong><code>[zd_blocks id="номер"]</code></strong> — і на цьому місці з'являється вміст набору.</li>
+</ol>
+<blockquote><p><strong>Головна перевага:</strong> відредагували набір один раз → зміни автоматично з'являться на <strong>всіх</strong> сторінках, де він вставлений. Не треба правити кожну сторінку окремо.</p></blockquote>
+<p><strong>Сам набір блоків невидимий для відвідувачів</strong> — він не має власної адреси, не з'являється в пошуку чи в мапі сайту. Його вміст показується <strong>лише</strong> там, де ви вставили код.</p>
+<hr>
+<span id="step1"></span>
+<h2>Крок 1. Створити набір блоків</h2>
+<ol>
+<li>Увійдіть в адмінпанель: <code>zdorovo-dent.com.ua/wp-admin</code>.</li>
+<li>У лівому меню знайдіть <strong>«Набори блоків»</strong> (значок — сітка/макет).</li>
+<li>Натисніть <strong>«Додати набір блоків»</strong>.</li>
+<li>Вгорі впишіть <strong>внутрішню назву</strong> — для себе, наприклад <code>Форма запису — низ сторінок</code>. Цю назву відвідувачі не бачать.</li>
+<li>Натисніть <strong>«Опублікувати»</strong>.</li>
+</ol>
+<blockquote><p>Назва потрібна лише щоб ви впізнавали набір у списку. Робіть її зрозумілою: «CTA — головна», «Відгуки — блок», «Форма — послуги» тощо.</p></blockquote>
+<hr>
+<span id="step2"></span>
+<h2>Крок 2. Наповнити набір модулями</h2>
+<p>Під полем назви ви побачите такий самий конструктор, як на сторінках послуг.</p>
+<ol>
+<li>Натисніть <strong>«Додати секцію»</strong>.</li>
+<li>Оберіть потрібний модуль зі списку — наприклад <strong>«Фінальний CTA + форма»</strong>.</li>
+<li>Заповніть його поля (заголовок, текст тощо).</li>
+<li>За потреби додайте ще кілька секцій — вони покажуться одна за одною.</li>
+<li>Натисніть <strong>«Оновити»</strong>.</li>
+</ol>
+<p>Які модулі є (найкорисніші для вставки в інші сторінки):</p>
+<div class="tablewrap"><table><thead><tr><th>Модуль</th><th>Для чого</th></tr></thead><tbody>
+<tr><td><strong>Фінальний CTA + форма</strong></td><td>Заклик записатися + форма запису</td></tr>
+<tr><td><strong>Блок CTA</strong></td><td>Смуга із закликом і кнопками (без форми)</td></tr>
+<tr><td><strong>Відгуки</strong></td><td>Відгуки пацієнтів з Google</td></tr>
+<tr><td><strong>FAQ</strong></td><td>Часті запитання</td></tr>
+<tr><td><strong>Лікарі</strong></td><td>Картки лікарів</td></tr>
+<tr><td><strong>Гарантії / партнери</strong></td><td>Гарантії та логотипи</td></tr>
+</tbody></table></div>
+<blockquote><p>Повний опис усіх модулів — в інструкції <a href="service-pages-how-to-uk.html">«Як створити та наповнити сторінку послуги»</a>, розділ «Довідник секцій». Тут вони працюють так само.</p></blockquote>
+<hr>
+<span id="step3"></span>
+<h2>Крок 3. Дізнатися ID набору</h2>
+<p>ID — це номер набору. Він потрібен для коду вставки.</p>
+<ol>
+<li>Відкрийте набір блоків на редагування.</li>
+<li>Подивіться на адресу сторінки у браузері — там буде щось на кшталт: <code>…/wp-admin/post.php?post=</code><strong><code>1234</code></strong><code>&amp;action=edit</code></li>
+<li>Число після <code>post=</code> — це і є <strong>ID</strong> (у прикладі — <code>1234</code>).</li>
+</ol>
+<p>Запам'ятайте або скопіюйте це число.</p>
+<hr>
+<span id="elementor"></span>
+<h2>Крок 4а. Вставити в Elementor</h2>
+<ol>
+<li>Відкрийте потрібну сторінку в <strong>Elementor</strong>.</li>
+<li>У панелі зліва знайдіть віджет <strong>«Короткий код»</strong> (Shortcode).</li>
+<li>Перетягніть його на сторінку — туди, де має бути блок (зазвичай унизу).</li>
+<li>У поле віджета впишіть <code>[zd_blocks id="1234"]</code> (замість <code>1234</code> — ваш ID з кроку 3).</li>
+<li>Натисніть <strong>«Оновити»</strong> (Update) в Elementor.</li>
+</ol>
+<p>Готово — на цьому місці з'явиться вміст набору. Повторіть на інших сторінках з тим самим кодом — усі показуватимуть один і той самий набір.</p>
+<blockquote><p><strong>Фон блоку розтягнеться на всю ширину екрана</strong> (наприклад, зелений фон форми), навіть якщо колонка в Elementor вужча. Це зроблено навмисно, щоб виглядало як на сторінках послуг. Решта вмісту сторінки залишається у своїх межах.</p></blockquote>
+<hr>
+<span id="gutenberg"></span>
+<h2>Крок 4б. Вставити у звичайному редакторі WordPress</h2>
+<p>Якщо сторінка <strong>не</strong> на Elementor, а на стандартному редакторі:</p>
+<p><strong>Блоковий редактор (Gutenberg):</strong></p>
+<ol>
+<li>Відкрийте сторінку на редагування.</li>
+<li>Натисніть <strong>«+»</strong> (додати блок) там, де має бути блок.</li>
+<li>У пошуку блоків впишіть <strong>«Короткий код»</strong> (Shortcode) і оберіть його.</li>
+<li>Впишіть у поле <code>[zd_blocks id="1234"]</code>.</li>
+<li>Натисніть <strong>«Оновити»</strong>.</li>
+</ol>
+<p><strong>Класичний редактор</strong> (якщо він у вас):</p>
+<ul>
+<li>Просто впишіть <code>[zd_blocks id="1234"]</code> прямо в текст сторінки в тому місці, де потрібен блок, і збережіть.</li>
+</ul>
+<hr>
+<span id="form"></span>
+<h2>Форма запису: глобальна чи своя</h2>
+<p>Якщо в наборі є модуль <strong>«Фінальний CTA + форма»</strong>, він показує форму запису. Форму можна задати двома способами:</p>
+<ul>
+<li><strong>Глобальна (за замовчуванням).</strong> Залиште поле <strong>«Form override (CF7 id)»</strong> порожнім — тоді використається спільна форма з <strong>«Глобальний контент»</strong> (<code>opt_booking_form</code>). Одна форма на весь сайт.</li>
+<li><strong>Своя для цього набору.</strong> Впишіть у <strong>«Form override (CF7 id)»</strong> номер (ID) потрібної форми Contact Form 7 — тоді цей набір використає саме її.</li>
+</ul>
+<blockquote><p>Якщо форма не з'являється взагалі — швидше за все, не заданий ID форми ні в наборі, ні в «Глобальний контент». Впишіть ID форми Contact Form 7 в одному з цих місць.</p></blockquote>
+<hr>
+<span id="notes"></span>
+<h2>Важливі особливості</h2>
+<ul>
+<li><strong>Один набір — багато сторінок.</strong> Редагуєте набір один раз, зміни з'являються скрізь, де вставлений його код.</li>
+<li><strong>Набір невидимий сам по собі.</strong> У відвідувача немає способу відкрити набір напряму — він показується лише всередині сторінок, де ви його вставили. У пошук і мапу сайту не потрапляє.</li>
+<li><strong>Фон на всю ширину.</strong> Блоки з кольоровим фоном (форма, CTA-банер) розтягуються від краю до краю екрана.</li>
+<li><strong>Якщо змін не видно</strong> — очистіть кеш: <strong>Performance → Purge All Caches</strong> у верхньому меню адмінки, тоді оновіть сторінку.</li>
+<li><strong>Двомовність.</strong> Якщо потрібен блок і українською, і англійською — створіть <strong>два</strong> набори (по одному на мову) і вставте відповідний код на сторінки кожної мови. Набори не перекладаються автоматично.</li>
+</ul>
+<hr>
+<span id="examples"></span>
+<h2>Приклади використання</h2>
+<ul>
+<li><strong>Форма запису внизу кожної сторінки.</strong> Набір із модулем «Фінальний CTA + форма», код <code>[zd_blocks id="…"]</code> унизу головної, сторінки «Про нас», блогу тощо.</li>
+<li><strong>Банер-заклик посеред сторінки.</strong> Набір із «Блок CTA», вставлений між секціями Elementor.</li>
+<li><strong>Відгуки на кількох сторінках.</strong> Один набір «Відгуки» → однакові відгуки скрізь, оновлення в одному місці.</li>
+</ul>
+<hr>
+<span id="troubleshooting"></span>
+<h2>Часті помилки</h2>
+<p><strong>Замість блоку видно сам код <code>[zd_blocks id="…"]</code>.</strong> Код опинився у звичайному текстовому полі, а не у віджеті/блоці «Короткий код». В Elementor використовуйте віджет <strong>«Короткий код»</strong>, у Gutenberg — блок <strong>«Короткий код»</strong>.</p>
+<p><strong>Блок не з'являється (порожнє місце).</strong></p>
+<ul>
+<li>Перевірте, що <strong>ID правильний</strong> (число з адреси набору).</li>
+<li>Перевірте, що в наборі <strong>є хоча б одна секція</strong> і вона заповнена.</li>
+<li>Перевірте, що набір <strong>опублікований</strong>, а не в чернетці.</li>
+</ul>
+<p><strong>Блок є, але виглядає «без стилів» частку секунди.</strong> Це кеш. Очистіть <strong>Performance → Purge All Caches</strong>.</p>
+<p><strong>Форма не показується.</strong> Не заданий ID форми Contact Form 7 — впишіть його у модулі («Form override») або в «Глобальний контент → opt_booking_form».</p>
+<p><strong>Фон не на всю ширину.</strong> Очистіть кеш. Якщо не допомогло — напишіть розробнику (можливо, блок стоїть у нестандартній вузькій колонці).</p>
+<hr>
+<p>Якщо щось не виходить — <strong>не видаляйте набір блоків</strong>; напишіть розробнику з номером (ID) набору та адресою сторінки, де вставляли код.</p>
+    </article>
+  </div>
+</div>
+
+<footer class="foot">Zdorovo Dental — інструкція для адміністратора</footer>
+<button id="totop" type="button" aria-label="Нагору">↑</button>
+
+<script>
+  // Tick boxes are clickable, so the checklist can be worked through on screen.
+  document.querySelectorAll('ul.checks li').forEach(function (li) {
+    li.addEventListener('click', function () { li.classList.toggle('done'); });
+  });
+  // Back-to-top appears once the reader is past the first screen.
+  var t = document.getElementById('totop');
+  window.addEventListener('scroll', function () {
+    t.classList.toggle('show', window.scrollY > 600);
+  });
+  t.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+</script>
+</body>
+</html>

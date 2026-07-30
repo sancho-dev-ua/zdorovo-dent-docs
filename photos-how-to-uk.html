@@ -88,6 +88,11 @@
     background: #eef6f1; border: 1px solid #d9ebe2; border-radius: 4px;
     padding: 1px 5px; color: var(--accent-deep); overflow-wrap: anywhere;
   }
+  pre {
+    background: #0f2e1f; color: #d6f0e4; border-radius: 8px; padding: 14px 16px;
+    overflow-x: auto; margin: 0 0 16px; font-size: 14px; line-height: 1.5;
+  }
+  pre code { background: none; border: 0; padding: 0; color: inherit; font-size: 14px; }
   hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
   blockquote {
     margin: 0 0 16px; padding: 12px 18px; background: var(--tint);
@@ -199,9 +204,15 @@
 <h2>Назва файлу — найчастіша помилка</h2>
 <p><strong>Це найважливіший пункт усієї інструкції.</strong></p>
 <h3>❌ Так робити не можна</h3>
-<p>``<code> Знімок екрана 2026-03-15 о 22.13.23.png Фото пацієнта (1).jpg IMG_9044.JPG до і після 2.jpeg </code>``</p>
+<pre><code>Знімок екрана 2026-03-15 о 22.13.23.png
+Фото пацієнта (1).jpg
+IMG_9044.JPG
+до і після 2.jpeg</code></pre>
 <h3>✅ Так правильно</h3>
-<p>``<code> implantaciya-do-pislya.jpg likar-zhelnova-portret.jpg vinir-keramika-blyzko.jpg klinika-kabinet-1.jpg </code>``</p>
+<pre><code>implantaciya-do-pislya.jpg
+likar-zhelnova-portret.jpg
+vinir-keramika-blyzko.jpg
+klinika-kabinet-1.jpg</code></pre>
 <h3>Правила</h3>
 <ol>
 <li><strong>Тільки латинські літери.</strong> Ніякої кирилиці.</li>

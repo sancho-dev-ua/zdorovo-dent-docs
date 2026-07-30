@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Як створити та наповнити сторінку послуги — Zdorovo Dental</title>
-<meta name="description" content="Покрокова інструкція для адміністратора сайту: як створити сторінку послуги, заповнити головний екран, зібрати сторінку із секцій та опублікувати.">
+<meta name="description" content="Інструкція для адміністратора сайту zdorovo-dent.com.ua. Технічних знань не потрібно — усе робиться мишкою в адмінпанелі.">
 <meta name="robots" content="noindex, nofollow">
 <style>
   :root {
@@ -88,6 +88,11 @@
     background: #eef6f1; border: 1px solid #d9ebe2; border-radius: 4px;
     padding: 1px 5px; color: var(--accent-deep); overflow-wrap: anywhere;
   }
+  pre {
+    background: #0f2e1f; color: #d6f0e4; border-radius: 8px; padding: 14px 16px;
+    overflow-x: auto; margin: 0 0 16px; font-size: 14px; line-height: 1.5;
+  }
+  pre code { background: none; border: 0; padding: 0; color: inherit; font-size: 14px; }
   hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
   blockquote {
     margin: 0 0 16px; padding: 12px 18px; background: var(--tint);
@@ -148,7 +153,7 @@
 <header class="top">
   <div class="wrap">
     <h1>Як створити та наповнити сторінку послуги</h1>
-    <p>Інструкція для адміністратора сайту zdorovo-dent.com.ua. Технічних знань не потрібно — усе робиться мишкою в адмінпанелі.</p>
+    <p>Інструкція для адміністратора сайту zdorovo-dent.com.ua. Технічних знань не потрібно — усе робиться мишкою в адмінпанелі.</p>
     <a class="print" href="javascript:window.print()">Роздрукувати / зберегти в PDF</a>
   </div>
 </header>
@@ -477,6 +482,7 @@
 <p><strong>Заголовок сторінки не з'явився.</strong> Якщо <strong>Heading</strong> у Hero порожнє, візьметься назва послуги згори. Сторінка не зламається, але краще заповнити — саме цей заголовок бачить Google.</p>
 <p><strong>Фото завантажується довго / виглядає розмито.</strong> Не завантажуйте фото прямо з фотоапарата (вони бувають по 10–20 МБ). Оптимально — до 2 МБ, ширина до 2000 пікселів.</p>
 <p><strong>⚠️ Не використовуйте українські літери в назвах файлів.</strong> Назвіть файл <code>implantaciya-do-pislya.jpg</code>, а не <code>Знімок екрана 2026-03-15.png</code>. Через кириличні назви сайт не може створити зменшені копії фото, і відвідувачі з телефонів змушені завантажувати велике зображення — сторінка стає повільнішою.</p>
+<blockquote><p>Детально про підготовку фото — розмір, вага, формат, опис (alt) та згода пацієнта — в окремій інструкції <a href="photos-how-to-uk.html">«Як правильно готувати фото для сайту»</a>.</p></blockquote>
 <p><strong>Кнопка «Показати всі» не з'являється.</strong> Найімовірніше, усі плитки й так помістилися. Перевірте на телефоні — там колонка одна.</p>
 <p><strong>Секція заповнена, але на сайті її немає.</strong> Перевірте, чи не «вимкнена» вона (три крапки → Enable). Деякі секції не відображаються, якщо порожні — наприклад, «До / після» без жодного кейсу.</p>
 <p><strong>У блоці «До / після» немає стрілок перемикання.</strong> Стрілки з'являються, лише коли кейсів <strong>два або більше</strong>.</p>

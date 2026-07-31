@@ -23,6 +23,6 @@
 ## Про ці файли
 
 Сторінки згенеровано автоматично з Markdown-джерел і оформлено за
-[дизайн-системою Zdorovo Dental](https://sancho-dev-ua.github.io/zdorovo-dent-design/)
+[дизайн-системою Zdorovo Dental](design-system-uk.html)
 (шрифти Montserrat / Noto Sans / Roboto Mono, фірмовий зелений `#1BAE70`). Джерела та
 генератори зберігаються в основному репозиторії сайту.

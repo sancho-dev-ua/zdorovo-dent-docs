@@ -143,6 +143,20 @@
     border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
   }
 
+  /* ---- copy-to-clipboard on code blocks (wrapper + button injected by JS) ---- */
+  .codewrap { position: relative; }
+  .codewrap pre { padding-top: 42px; }
+  .copybtn {
+    position: absolute; top: 8px; right: 8px;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; font: 700 12px var(--font-head);
+    background: rgba(255,255,255,.12); color: #E2E8F0;
+    border: 1px solid rgba(255,255,255,.28); border-radius: var(--r-pill);
+    cursor: pointer; opacity: .9; transition: background .15s, opacity .15s, color .15s, border-color .15s;
+  }
+  .copybtn:hover { background: rgba(255,255,255,.22); opacity: 1; }
+  .copybtn.ok { background: var(--green-500); border-color: var(--green-500); color: #fff; }
+
   /* ---- back to top ---- */
   #totop {
     position: fixed; right: 18px; bottom: 18px; width: 44px; height: 44px;
@@ -593,6 +607,40 @@
     t.classList.toggle('show', window.scrollY > 600);
   });
   t.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  // Copy-to-clipboard on every code block: wrap each <pre> and add a button that copies
+  // its text. Uses the async Clipboard API with an execCommand fallback for non-secure
+  // (e.g. file://) contexts, so it works both hosted and opened locally.
+  document.querySelectorAll('article pre').forEach(function (pre) {
+    var wrap = document.createElement('div');
+    wrap.className = 'codewrap';
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copybtn';
+    btn.textContent = 'Копіювати';
+    var reset;
+    btn.addEventListener('click', function () {
+      var text = pre.innerText;
+      var done = function () {
+        btn.textContent = 'Скопійовано ✓';
+        btn.classList.add('ok');
+        clearTimeout(reset);
+        reset = setTimeout(function () { btn.textContent = 'Копіювати'; btn.classList.remove('ok'); }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+      } else { fallback(); }
+      function fallback() {
+        var r = document.createRange(); r.selectNodeContents(pre);
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        try { document.execCommand('copy'); } catch (e) {}
+        sel.removeAllRanges(); done();
+      }
+    });
+    wrap.appendChild(btn);
+  });
 </script>
 </body>
 </html>

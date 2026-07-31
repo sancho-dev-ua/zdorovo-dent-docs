@@ -44,7 +44,9 @@
   header.top h1 { font-family: var(--font-head); font-weight: 800; margin: 0 0 14px; font-size: clamp(28px, 5vw, 46px); line-height: 1.1; letter-spacing: -.02em; }
   header.top p { margin: 0; opacity: .92; max-width: 64ch; font-size: 17px; }
 
-  main { padding: 40px 0 64px; }
+  /* main.wrap (not bare main): the .wrap class also sets padding, and a class beats an
+     element selector — so the top padding must live here or it gets wiped to zero. */
+  main.wrap { padding: 52px 20px 64px; }
   section.group { margin: 0 0 40px; }
   section.group > h2 {
     font-family: var(--font-head); font-weight: 700; font-size: 15px; letter-spacing: .04em;

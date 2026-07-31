@@ -149,8 +149,32 @@
   .cmp .nums { font-family: var(--font-heading); font-weight: 800; font-size: 26px; color: var(--brand-strong); margin-top: 4px; }
   .cmp .nums small { font-family: var(--font-sans); font-weight: 400; font-size: 13px; color: var(--ink-500); }
 </style>
+<style id="zd-doc-chrome">
+  .ds-head { background: linear-gradient(135deg, var(--green-700), var(--green-500)); color: #fff; }
+  .ds-head__in { max-width: 1080px; margin: 0 auto; padding: 44px 28px 38px; }
+  .ds-head__kicker { margin: 0 0 12px; font: 700 12px/1 var(--font-heading); letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+  .ds-head__title { margin: 0 0 12px; font: 800 clamp(28px, 4.5vw, 40px)/1.1 var(--font-heading); letter-spacing: -.02em; color: #fff; }
+  .ds-head__sub { margin: 0; max-width: 64ch; font-family: var(--font-sans); line-height: 1.55; opacity: .92; }
+  .ds-head__actions { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .ds-head__btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 20px; border-radius: var(--radius-pill); font: 700 14px var(--font-heading); text-decoration: none; border: 1.5px solid rgba(255,255,255,.55); color: #fff; }
+  .ds-head__btn:hover { background: rgba(255,255,255,.15); border-color: #fff; }
+  /* The export ships its own light title block; hide it — our header replaces it. */
+  .wrap > .doc-eyebrow, .wrap > .doc-title, .wrap > .doc-sub { display: none; }
+  .ds-foot { text-align: center; color: var(--ink-500); font-size: 13px; padding: 8px 28px 48px; font-family: var(--font-sans); }
+  .ds-foot a { color: var(--green-700); }
+  @media print { .ds-head__actions { display: none; } }
+</style>
 </head>
 <body>
+<header class="ds-head"><div class="ds-head__in">
+  <p class="ds-head__kicker">Zdorovo Dental — бренд</p>
+  <h1 class="ds-head__title">Дизайн-система</h1>
+  <p class="ds-head__sub">Базові елементи візуальної системи бренду: логотип, кольори, типографіка, кнопки, поверхні та іконки.</p>
+  <div class="ds-head__actions">
+    <a class="ds-head__btn" href="index.html">← Усі інструкції</a>
+    <a class="ds-head__btn" href="javascript:window.print()">Роздрукувати / зберегти в PDF</a>
+  </div>
+</div></header>
 <div class="wrap">
   <div class="doc-eyebrow">Дизайн-система · Zdorovo Dental</div>
   <h1 class="doc-title">Основи бренду — на погодження</h1>
@@ -332,5 +356,6 @@
     </ul>
   </div>
 </div>
+<footer class="ds-foot">Zdorovo Dental — дизайн-система · <a href="index.html">усі інструкції</a></footer>
 </body>
 </html>
